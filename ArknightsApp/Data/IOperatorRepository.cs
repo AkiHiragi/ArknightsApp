@@ -1,3 +1,4 @@
+using ArknightsApp.DTO;
 using ArknightsApp.Models;
 
 namespace ArknightsApp.Data;
@@ -16,4 +17,9 @@ public interface IOperatorRepository
     Task<IEnumerable<Operator>> GetGlobalReleasedAsync();
     Task<IEnumerable<Operator>> GetCnOnlyAsync();
     Task<IEnumerable<Operator>> GetByReleaseDateAsync(DateTime fromDate, DateTime? toDate);
+
+    Task<IEnumerable<Operator>> SearchByNameAsync(string  name);
+    Task<PagedResult<Operator>> GetPagedAsync(int         page, int pageSize);
+    Task<PagedResult<Operator>> SearchAsync(SearchRequest request);
+    Task<bool>                  ExistsAsync(int           id);
 }
