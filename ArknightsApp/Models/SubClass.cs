@@ -7,6 +7,6 @@ public class SubClass
     public          string Description     { get; set; } = string.Empty;
     public          int    OperatorClassId { get; set; }
 
-    public OperatorClass  OperatorClass { get; set; } = null!;
+    public OperatorClass? OperatorClass { get; set; }
     public List<Operator> Operators     { get; set; } = [];
 }

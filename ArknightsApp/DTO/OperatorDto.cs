@@ -11,4 +11,10 @@ public class OperatorDto
     public string  ImageUrl     { get; set; } = string.Empty;
     public string  Description  { get; set; } = string.Empty;
     public string  Position     { get; set; } = string.Empty;
+    
+    public DateTime  CnReleaseDate     { get; set; }
+    public DateTime? GlobalReleaseDate { get; set; }
+
+    public bool   IsGlobalReleased => GlobalReleaseDate.HasValue;
+    public string ReleaseStatus    => IsGlobalReleased ? "Global" : "CN Only";
 }

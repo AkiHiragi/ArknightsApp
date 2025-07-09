@@ -6,11 +6,11 @@ public class Operator
     public required string Name   { get; set; }
     public          int    Rarity { get; set; }
 
-    public          int           OperatorClassId { get; set; }
-    public required OperatorClass OperatorClass   { get; set; } = null!;
+    public int            OperatorClassId { get; set; }
+    public OperatorClass? OperatorClass   { get; set; }
 
-    public          int      SubClassId { get; set; }
-    public required SubClass SubClass   { get; set; } = null!;
+    public int       SubClassId { get; set; }
+    public SubClass? SubClass   { get; set; }
 
     public int?     FactionId { get; set; }
     public Faction? Faction   { get; set; } = null!;
@@ -22,4 +22,9 @@ public class Operator
     public List<Skill>          Skills          { get; set; } = [];
     public List<Talent>         Talents         { get; set; } = [];
     public List<OperatorModule> OperatorModules { get; set; } = [];
+
+    public required DateTime  CnReleaseDate     { get; set; }
+    public          DateTime? GlobalReleaseDate { get; set; }
+
+    public OperatorGrowthTemplate? GrowthTemplate { get; set; }
 }
