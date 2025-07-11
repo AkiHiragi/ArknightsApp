@@ -30,6 +30,9 @@ public class ArknightsDbContext : DbContext
     // Характеристики
     public DbSet<OperatorGrowthTemplate> OperatorGrowthTemplates { get; set; }
 
+    // Пользователи
+    public DbSet<User> Users { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -37,6 +40,7 @@ public class ArknightsDbContext : DbContext
         ConfigureOperator(modelBuilder);
         ConfigureSkillsAndTalents(modelBuilder);
         ConfigureModules(modelBuilder);
+        ConfigureUsers(modelBuilder);
     }
 
     private void ConfigureOperator(ModelBuilder modelBuilder)
@@ -232,6 +236,33 @@ public class ArknightsDbContext : DbContext
             entity.HasOne(e => e.Operator)
                   .WithOne(e => e.GrowthTemplate)
                   .HasForeignKey<OperatorGrowthTemplate>(e => e.OperatorId);
+        });
+    }
+
+    private void ConfigureUsers(ModelBuilder modelBuilder)
+    {
+        // User
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.HasIndex(e => e.Username).IsUnique();
+            entity.HasIndex(e => e.Email).IsUnique();
+
+            entity.Property(e => e.Username)
+                  .IsRequired()
+                  .HasMaxLength(50);
+
+            entity.Property(e => e.Email)
+                  .IsRequired()
+                  .HasMaxLength(100);
+
+            entity.Property(e => e.PasswordHash)
+                  .IsRequired()
+                  .HasMaxLength(255);
+
+            entity.Property(e => e.Role)
+                  .HasConversion<string>();
         });
     }
 }

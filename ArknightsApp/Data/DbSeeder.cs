@@ -1,4 +1,5 @@
 using ArknightsApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ArknightsApp.Data;
 
@@ -6,11 +7,28 @@ public class DbSeeder
 {
     public static async Task SeedAsync(ArknightsDbContext context)
     {
-        if (context.Operators.Any())
+        await context.Database.EnsureCreatedAsync();
+
+        if (!await context.Users.AnyAsync())
+        {
+            var admin = new User
+            {
+                Username     = "admin",
+                Email        = "admin@arknights.local",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123"),
+                Role         = UserRole.Admin,
+                CreatedAt    = DateTime.UtcNow,
+            };
+
+            context.Users.Add(admin);
+            await context.SaveChangesAsync();
+        }
+
+        if (await context.Operators.AnyAsync())
         {
             return;
         }
-        
+
         var operatorClasses = new List<OperatorClass>
         {
             new()
@@ -44,7 +62,7 @@ public class DbSeeder
 
         context.OperatorClasses.AddRange(operatorClasses);
         await context.SaveChangesAsync();
-        
+
         var subClasses = new List<SubClass>
         {
             new() { Id = 1, Name = "Arts Guard", OperatorClassId      = 1 },
@@ -93,7 +111,7 @@ public class DbSeeder
                 OperatorClassId   = 2,
                 SubClassId        = 4,
                 FactionId         = 1,
-                ImageUrl          = "/images/amiya.png",
+                ImageUrl          = "/images/operators/amiya.jpg",
                 Description       = "Лидер Rhodes Island и талантливый кастер",
                 Position          = "Ranged",
                 CnReleaseDate     = new DateTime(2019, 4, 30),
@@ -107,7 +125,7 @@ public class DbSeeder
                 OperatorClassId   = 1,
                 SubClassId        = 3,
                 FactionId         = 4,
-                ImageUrl          = "/images/silverash.png",
+                ImageUrl          = "/images/operators/silverash.jpg",
                 Description       = "Глава Karlan Trade, мастер меча",
                 Position          = "Melee",
                 CnReleaseDate     = new DateTime(2019, 4, 30),
@@ -121,7 +139,7 @@ public class DbSeeder
                 OperatorClassId   = 3,
                 SubClassId        = 7,
                 FactionId         = 3,
-                ImageUrl          = "/images/exusiai.png",
+                ImageUrl          = "/images/operators/exusiai.jpg",
                 Description       = "Снайпер Penguin Logistics с высокой скорострельностью",
                 Position          = "Ranged",
                 CnReleaseDate     = new DateTime(2019, 4, 30),
@@ -135,7 +153,7 @@ public class DbSeeder
                 OperatorClassId   = 2,
                 SubClassId        = 4,
                 FactionId         = 1,
-                ImageUrl          = "/images/eyjafjalla.png",
+                ImageUrl          = "/images/operators/eyjafjalla.jpg",
                 Description       = "Мощный кастер с вулканическими способностями",
                 Position          = "Ranged",
                 CnReleaseDate     = new DateTime(2019, 8, 1),
@@ -149,7 +167,7 @@ public class DbSeeder
                 OperatorClassId   = 1,
                 SubClassId        = 2,
                 FactionId         = 1,
-                ImageUrl          = "/images/blaze.png",
+                ImageUrl          = "/images/operators/blaze.jpg",
                 Description       = "Элитный оператор Rhodes Island с цепной пилой",
                 Position          = "Melee",
                 CnReleaseDate     = new DateTime(2020, 4, 29),

@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Row, Col, Card, Badge, Button, Alert, Spinner, ListGroup } from 'react-bootstrap';
-import { operatorApi } from '../services/api';
-import { OperatorDetailsDto } from '../types';
+import React, {useEffect, useState} from 'react';
+import {useParams, useNavigate} from 'react-router-dom';
+import {Row, Col, Card, Badge, Button, Alert, Spinner, ListGroup} from 'react-bootstrap';
+import {operatorApi} from '../services/api';
+import {OperatorDetailsDto} from '../types';
+import {formatDate} from "../utils/dateUtils";
 
 const OperatorDetail: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
+    const {id} = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [operator, setOperator] = useState<OperatorDetailsDto | null>(null);
     const [loading, setLoading] = useState(true);
@@ -18,6 +19,7 @@ const OperatorDetail: React.FC = () => {
             try {
                 setLoading(true);
                 const response = await operatorApi.getById(Number(id));
+                console.log('Operator data:',response.data);
                 setOperator(response.data);
             } catch (err) {
                 setError('Оператор не найден');
@@ -44,6 +46,17 @@ const OperatorDetail: React.FC = () => {
             6: 'danger'
         };
         return colors[rarity as keyof typeof colors] || 'secondary';
+    };
+
+    const getStatusBadge = (operator: OperatorDetailsDto) => {
+        return (
+            <Badge
+                bg={operator.isGlobalReleased ? 'success' : 'warning'}
+                className="ms-2"
+            >
+                {operator.isGlobalReleased ? 'Global' : 'CN Only'}
+            </Badge>
+        );
     };
 
     if (loading) {
@@ -87,7 +100,7 @@ const OperatorDetail: React.FC = () => {
                             variant="top"
                             src={operator.imageUrl}
                             alt={operator.name}
-                            style={{ height: '400px', objectFit: 'cover' }}
+                            style={{height: '400px', objectFit: 'contain', backgroundColor: '#f8f9fa'}}
                             onError={(e) => {
                                 (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x400?text=No+Image';
                             }}
@@ -116,21 +129,15 @@ const OperatorDetail: React.FC = () => {
                                     <strong>Позиция:</strong> {operator.position}
                                 </ListGroup.Item>
                                 <ListGroup.Item className="px-0">
-                                    <strong>Релиз CN:</strong> {new Date(operator.cnReleaseDate).toLocaleDateString('ru-RU')}
+                                    <strong>Релиз CN:</strong> {formatDate(operator.cnReleaseDate)}
                                 </ListGroup.Item>
                                 {operator.globalReleaseDate && (
                                     <ListGroup.Item className="px-0">
-                                        <strong>Релиз Global:</strong> {new Date(operator.globalReleaseDate).toLocaleDateString('ru-RU')}
+                                        <strong>Релиз Global:</strong> {formatDate(operator.globalReleaseDate)}
                                     </ListGroup.Item>
                                 )}
                                 <ListGroup.Item className="px-0">
-                                    <strong>Статус:</strong>
-                                    <Badge
-                                        bg={operator.isGlobalReleased ? 'success' : 'warning'}
-                                        className="ms-2"
-                                    >
-                                        {operator.releaseStatus}
-                                    </Badge>
+                                    <strong>Статус:</strong> {getStatusBadge(operator)}
                                 </ListGroup.Item>
                             </ListGroup>
                         </Card.Body>

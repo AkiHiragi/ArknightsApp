@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Badge } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { OperatorDto } from '../types';
+import {formatDate} from "../utils/dateUtils";
 
 interface OperatorCardProps {
     operator: OperatorDto;
@@ -31,7 +32,7 @@ const OperatorCard: React.FC<OperatorCardProps> = ({ operator }) => {
                     variant="top"
                     src={operator.imageUrl}
                     alt={operator.name}
-                    style={{ height: '200px', objectFit: 'cover' }}
+                    style={{ height: '200px', objectFit: 'contain', backgroundColor:'#f8f9fa' }}
                     onError={(e) => {
                         (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x200?text=No+Image';
                     }}
@@ -68,7 +69,7 @@ const OperatorCard: React.FC<OperatorCardProps> = ({ operator }) => {
                     <div className="mt-auto">
                         <small className="text-muted">
                             <i className="bi bi-calendar me-1"></i>
-                            {new Date(operator.cnReleaseDate).toLocaleDateString('ru-RU')}
+                            {formatDate(operator.cnReleaseDate)}
                             {operator.isGlobalReleased && (
                                 <Badge bg="success" className="ms-2">Global</Badge>
                             )}

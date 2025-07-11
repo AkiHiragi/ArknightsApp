@@ -1,7 +1,8 @@
 import axios from "axios";
 import {FactionDto, OperatorClassDto, OperatorDetailsDto, OperatorDto, PagedResult, SearchRequest} from "../types";
 
-const API_BASE_URL = 'http://localhost:5000/api'
+const API_BASE_URL = 'http://localhost:5000/api';
+const SERVER_BASE_URL = 'http://localhost:5000';
 
 const api = axios.create({
     baseURL: API_BASE_URL,
@@ -10,19 +11,83 @@ const api = axios.create({
     },
 });
 
+const transformImageUrl = (imageUrl: string): string => {
+    if (imageUrl.startsWith('http')) {
+        return imageUrl; // Уже полный URL
+    }
+    return `${SERVER_BASE_URL}${imageUrl}`; // Добавляем базовый URL сервера
+};
+
+const processOperatorData = <T extends { imageUrl: string }>(data: T): T => {
+    return {
+        ...data,
+        imageUrl: transformImageUrl(data.imageUrl)
+    };
+};
+
 export const operatorApi = {
-    getAll: () => api.get<OperatorDto[]>('/operators'),
-    getById: (id: number) => api.get<OperatorDetailsDto>(`/operators/${id}`),
-    
-    search:(name:string) => api.get<OperatorDto[]>(`/operators/search?name=${encodeURIComponent(name)}`),
-    getPaged: (page: number, pageSize: number) =>
-        api.get<PagedResult<OperatorDto>>(`/operators/paged?page=${page}&pageSize=${pageSize}`),
-    searchAdvanced: (request: SearchRequest) =>
-        api.post<PagedResult<OperatorDto>>('/operators/search/advanced', request),
-    
-    getByRarity: (rarity: number) => api.get<OperatorDto[]>(`/operators/rarity/${rarity}`),
-    getNewest: (count: number = 10) => api.get<OperatorDto[]>(`/operators/newest?count=${count}`),
-}
+    getAll: async () => {
+        const response = await api.get<OperatorDto[]>('/operators');
+        return {
+            ...response,
+            data: response.data.map(processOperatorData)
+        };
+    },
+
+    getById: async (id: number) => {
+        const response = await api.get<OperatorDetailsDto>(`/operators/${id}`);
+        return {
+            ...response,
+            data: processOperatorData(response.data)
+        };
+    },
+
+    search: async (name: string) => {
+        const response = await api.get<OperatorDto[]>(`/operators/search?name=${encodeURIComponent(name)}`);
+        return {
+            ...response,
+            data: response.data.map(processOperatorData)
+        };
+    },
+
+    getPaged: async (page: number, pageSize: number) => {
+        const response = await api.get<PagedResult<OperatorDto>>(`/operators/paged?page=${page}&pageSize=${pageSize}`);
+        return {
+            ...response,
+            data: {
+                ...response.data,
+                items: response.data.items.map(processOperatorData)
+            }
+        };
+    },
+
+    searchAdvanced: async (request: SearchRequest) => {
+        const response = await api.post<PagedResult<OperatorDto>>('/operators/search/advanced', request);
+        return {
+            ...response,
+            data: {
+                ...response.data,
+                items: response.data.items.map(processOperatorData)
+            }
+        };
+    },
+
+    getByRarity: async (rarity: number) => {
+        const response = await api.get<OperatorDto[]>(`/operators/rarity/${rarity}`);
+        return {
+            ...response,
+            data: response.data.map(processOperatorData)
+        };
+    },
+
+    getNewest: async (count: number = 10) => {
+        const response = await api.get<OperatorDto[]>(`/operators/newest?count=${count}`);
+        return {
+            ...response,
+            data: response.data.map(processOperatorData)
+        };
+    },
+};
 
 export const referenceApi = {
     getClasses: () => api.get<OperatorClassDto[]>('/references/classes'),
