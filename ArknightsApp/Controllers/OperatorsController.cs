@@ -1,4 +1,6 @@
+using ArknightsApp.Attributes;
 using ArknightsApp.DTO;
+using ArknightsApp.Models;
 using ArknightsApp.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +36,7 @@ public class OperatorsController : ControllerBase
     }
 
     [HttpPost]
+    [RequiredRole(UserRole.Admin)]
     public async Task<ActionResult<OperatorDto>> CreateOperator(OperatorCreateDto operatorDto)
     {
         try
@@ -80,6 +83,7 @@ public class OperatorsController : ControllerBase
     }
     
     [HttpPut("{id}")]
+    [RequiredRole(UserRole.Admin)]
     public async Task<ActionResult<OperatorDto>> UpdateOperator(int id, OperatorCreateDto operatorDto)
     {
         try
@@ -94,6 +98,7 @@ public class OperatorsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [RequiredRole(UserRole.Admin)]
     public async Task<ActionResult> DeleteOperator(int id)
     {
         var result = await _operatorService.DeleteOperatorAsync(id);

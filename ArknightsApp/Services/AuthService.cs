@@ -7,10 +7,11 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using ArknightsApp.Validators;
 
 namespace ArknightsApp.Services
 {
-    public class AuthService
+    public class AuthService : IAuthService
     {
         private readonly ArknightsDbContext _context;
         private readonly IConfiguration _configuration;
@@ -65,6 +66,13 @@ namespace ArknightsApp.Services
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto request)
         {
+            var validator = new RegisterRequestValidator();
+            var validationResult = await validator.ValidateAsync(request);
+            if (!validationResult.IsValid)
+            {
+                throw new FluentValidation.ValidationException(validationResult.Errors);
+            }
+            
             _logger.LogInformation("Регистрация нового пользователя: {Username}", request.Username);
 
             // Проверяем, что пользователь не существует
@@ -85,7 +93,8 @@ namespace ArknightsApp.Services
                 Email = request.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
                 Role = UserRole.User, // По умолчанию обычный пользователь
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
             };
 
             _context.Users.Add(user);

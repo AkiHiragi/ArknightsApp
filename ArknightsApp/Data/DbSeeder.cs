@@ -18,6 +18,7 @@ public class DbSeeder
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123"),
                 Role         = UserRole.Admin,
                 CreatedAt    = DateTime.UtcNow,
+                IsActive     = true
             };
 
             context.Users.Add(admin);
