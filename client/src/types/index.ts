@@ -1,3 +1,5 @@
+import exp from "node:constants";
+
 export interface OperatorDto {
     id: number;
     name: string;
@@ -14,10 +16,10 @@ export interface OperatorDto {
     releaseStatus: string;
 }
 
-export interface OperatorDetailsDto extends OperatorDto{
-    skills:SkillDto[];
-    talents:TalentDto[];
-    baseStats?:OperatorBaseStatsDto;
+export interface OperatorDetailsDto extends OperatorDto {
+    skills: SkillDto[];
+    talents: TalentDto[];
+    baseStats?: OperatorBaseStatsDto;
 }
 
 export interface SkillDto {
@@ -28,7 +30,7 @@ export interface SkillDto {
     levels: string;
 }
 
-export interface SkillLevelDto{
+export interface SkillLevelDto {
     level: number;
     levelName: string;
     spCost: number;
@@ -97,4 +99,44 @@ export interface FactionDto {
     description: string;
     iconUrl?: string;
     logoUrl?: string;
+}
+
+// Типы для аутентификации
+export interface LoginRequest {
+    username: string;
+    password: string;
+}
+
+export interface RegisterRequest {
+    username: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+}
+
+export interface AuthResponse {
+    token: string;
+    user: User;
+    expiresAt: string;
+}
+
+export interface User {
+    id: number;
+    username: string;
+    email: string;
+    role: string;
+    createdAt: string;
+    lastLoginAt?: string;
+}
+
+// Контекст аутентификации
+export interface AuthContextType {
+    user: User | null;
+    token: string | null;
+    login: (credentials:LoginRequest) => Promise<void>;
+    register: (data: RegisterRequest) => Promise<void>;
+    logout: () => void;
+    isAuthenticated: boolean;
+    isAdmin: boolean;
+    isModerator: boolean;
 }

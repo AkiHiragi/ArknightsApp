@@ -1,5 +1,14 @@
 import axios from "axios";
-import {FactionDto, OperatorClassDto, OperatorDetailsDto, OperatorDto, PagedResult, SearchRequest} from "../types";
+import {
+    AuthResponse,
+    FactionDto,
+    LoginRequest,
+    OperatorClassDto,
+    OperatorDetailsDto,
+    OperatorDto,
+    PagedResult, RegisterRequest,
+    SearchRequest
+} from "../types";
 
 const API_BASE_URL = 'http://localhost:5000/api';
 const SERVER_BASE_URL = 'http://localhost:5000';
@@ -92,6 +101,40 @@ export const operatorApi = {
 export const referenceApi = {
     getClasses: () => api.get<OperatorClassDto[]>('/references/classes'),
     getFactions: () => api.get<FactionDto[]>('/references/factions'),
+};
+
+export const authApi = {
+    login: (credentials: LoginRequest) =>
+        api.post<AuthResponse>('/auth/login', credentials),
+
+    register: (data: RegisterRequest) =>
+        api.post<AuthResponse>('/auth/register', data),
+};
+
+export const setAuthToken = (token: string | null) => {
+    if (token) {
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    } else {
+        delete api.defaults.headers.common['Authorization'];
+    }
+}
+
+export const adminOperatorApi = {
+    create: (operatorData: any)=>
+        api.post('/operators', operatorData),
+    
+    update: (id:number, operatorData:any)=>
+        api.put(`/operators/${id}`, operatorData),
+    
+    delete:(id:number)=>
+        api.delete(`operators/${id}`)
+};
+
+export const adminReferenceApi = {
+    getUsers:()=>api.get('/admin/users'),
+    
+    updateUserRole:(userId:number, role:string)=>
+        api.put(`/admin/users/${userId}/role`,{role}),
 };
 
 export default api;
