@@ -101,6 +101,14 @@ export interface FactionDto {
     logoUrl?: string;
 }
 
+export interface SubClassDto {
+    id: number;
+    name: string;
+    description: string;
+    operatorClassId: number;
+    operatorClassName: string;
+}
+
 // Типы для аутентификации
 export interface LoginRequest {
     username: string;
@@ -133,7 +141,7 @@ export interface User {
 export interface AuthContextType {
     user: User | null;
     token: string | null;
-    login: (credentials:LoginRequest) => Promise<void>;
+    login: (credentials: LoginRequest) => Promise<void>;
     register: (data: RegisterRequest) => Promise<void>;
     logout: () => void;
     isAuthenticated: boolean;

@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate, Link } from 'react-router-dom';
-import { Table, Button, Alert, Spinner, Badge, Modal } from 'react-bootstrap';
-import { operatorApi, adminOperatorApi } from '../../services/api';
-import { OperatorDto } from '../../types';
+import React, {useState, useEffect} from 'react';
+import {Routes, Route, useNavigate, Link} from 'react-router-dom';
+import {Table, Button, Alert, Spinner, Badge, Modal} from 'react-bootstrap';
+import {operatorApi, adminOperatorApi} from '../../services/api';
+import {OperatorDto} from '../../types';
 import OperatorForm from './OperatorForm';
 
 const OperatorManagement: React.FC = () => {
     return (
         <Routes>
-            <Route path="/" element={<OperatorList />} />
-            <Route path="/create" element={<CreateOperator />} />
-            <Route path="/edit/:id" element={<EditOperator />} />
+            <Route path="/" element={<OperatorList/>}/>
+            <Route path="/create" element={<CreateOperator/>}/>
+            <Route path="/edit/:id" element={<EditOperator/>}/>
         </Routes>
     );
 };
@@ -44,7 +44,7 @@ const OperatorList: React.FC = () => {
         try {
             await adminOperatorApi.delete(operator.id);
             setOperators(prev => prev.filter(op => op.id !== operator.id));
-            setDeleteModal({ show: false, operator: null });
+            setDeleteModal({show: false, operator: null});
         } catch (err) {
             setError('Ошибка удаления оператора');
         }
@@ -52,14 +52,14 @@ const OperatorList: React.FC = () => {
 
     const getRarityStars = (rarity: number) => '★'.repeat(rarity);
     const getRarityColor = (rarity: number) => {
-        const colors = { 1: 'secondary', 2: 'success', 3: 'info', 4: 'primary', 5: 'warning', 6: 'danger' };
+        const colors = {1: 'secondary', 2: 'success', 3: 'info', 4: 'primary', 5: 'warning', 6: 'danger'};
         return colors[rarity as keyof typeof colors] || 'secondary';
     };
 
     if (loading) {
         return (
             <div className="text-center">
-                <Spinner animation="border" />
+                <Spinner animation="border"/>
                 <p>Загрузка операторов...</p>
             </div>
         );
@@ -84,6 +84,7 @@ const OperatorList: React.FC = () => {
                     <th>Имя</th>
                     <th>Редкость</th>
                     <th>Класс</th>
+                    <th>Подкласс</th>
                     <th>Фракция</th>
                     <th>Статус</th>
                     <th>Действия</th>
@@ -102,6 +103,7 @@ const OperatorList: React.FC = () => {
                             </Badge>
                         </td>
                         <td>{operator.className}</td>
+                        <td>{operator.subClassName}</td>
                         <td>{operator.factionName || 'Нет'}</td>
                         <td>
                             <Badge bg={operator.isGlobalReleased ? 'success' : 'warning'}>
@@ -120,7 +122,7 @@ const OperatorList: React.FC = () => {
                                 <Button
                                     size="sm"
                                     variant="outline-danger"
-                                    onClick={() => setDeleteModal({ show: true, operator })}
+                                    onClick={() => setDeleteModal({show: true, operator})}
                                 >
                                     <i className="bi bi-trash"></i>
                                 </Button>
@@ -132,17 +134,17 @@ const OperatorList: React.FC = () => {
             </Table>
 
             {/* Модальное окно подтверждения удаления */}
-            <Modal show={deleteModal.show} onHide={() => setDeleteModal({ show: false, operator: null })}>
+            <Modal show={deleteModal.show} onHide={() => setDeleteModal({show: false, operator: null})}>
                 <Modal.Header closeButton>
                     <Modal.Title>Подтверждение удаления</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     Вы уверены, что хотите удалить оператора <strong>{deleteModal.operator?.name}</strong>?
-                    <br />
+                    <br/>
                     <small className="text-muted">Это действие нельзя отменить.</small>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setDeleteModal({ show: false, operator: null })}>
+                    <Button variant="secondary" onClick={() => setDeleteModal({show: false, operator: null})}>
                         Отмена
                     </Button>
                     <Button variant="danger" onClick={() => deleteModal.operator && handleDelete(deleteModal.operator)}>

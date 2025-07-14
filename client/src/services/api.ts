@@ -7,7 +7,7 @@ import {
     OperatorDetailsDto,
     OperatorDto,
     PagedResult, RegisterRequest,
-    SearchRequest
+    SearchRequest, SubClassDto
 } from "../types";
 
 const API_BASE_URL = 'http://localhost:5000/api';
@@ -101,6 +101,9 @@ export const operatorApi = {
 export const referenceApi = {
     getClasses: () => api.get<OperatorClassDto[]>('/references/classes'),
     getFactions: () => api.get<FactionDto[]>('/references/factions'),
+
+    getSubClassesByClass: (classId: number) =>
+        api.get<SubClassDto[]>(`/references/classes/${classId}/subclasses`),
 };
 
 export const authApi = {
@@ -120,21 +123,36 @@ export const setAuthToken = (token: string | null) => {
 }
 
 export const adminOperatorApi = {
-    create: (operatorData: any)=>
+    create: (operatorData: any) =>
         api.post('/operators', operatorData),
-    
-    update: (id:number, operatorData:any)=>
+
+    update: (id: number, operatorData: any) =>
         api.put(`/operators/${id}`, operatorData),
-    
-    delete:(id:number)=>
+
+    delete: (id: number) =>
         api.delete(`operators/${id}`)
 };
 
 export const adminReferenceApi = {
-    getUsers:()=>api.get('/admin/users'),
-    
-    updateUserRole:(userId:number, role:string)=>
-        api.put(`/admin/users/${userId}/role`,{role}),
+    getUsers: () => api.get('/admin/users'),
+
+    updateUserRole: (userId: number, role: string) =>
+        api.put(`/admin/users/${userId}/role`, {role}),
+};
+
+// API для загрузки файлов
+export const fileUploadApi = {
+    uploadOperatorImage:(file:File,operatorName:string)=>{
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('operatorName', operatorName);
+        
+        return api.post('/fileupload/operator-image', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+        });
+    },
 };
 
 export default api;
