@@ -47,7 +47,10 @@ public class OperatorCreateValidator : AbstractValidator<OperatorCreateDto>
 
     private bool BeValidUrl(string url)
     {
-        return Uri.TryCreate(url, UriKind.Absolute, out var result)
-               && (result.Scheme == Uri.UriSchemeHttp || result.Scheme == Uri.UriSchemeHttps);
+       if (url.StartsWith('/') || url.StartsWith("images/"))
+          return true;
+       
+       return Uri.TryCreate(url, UriKind.Absolute, out var result)
+           && (result.Scheme == Uri.UriSchemeHttp || result.Scheme == Uri.UriSchemeHttps);
     }
 }

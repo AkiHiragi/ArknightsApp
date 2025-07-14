@@ -50,6 +50,13 @@ public class OperatorsController : ControllerBase
         }
     }
 
+    [HttpGet("{id}/edit")]
+    public async Task<ActionResult<OperatorEditDto>> GetOperatorForEdit(int id)
+    {
+        var op = await _operatorService.GetOperatorForEditAsync(id);
+        return op == null ? NotFound() : Ok(op);
+    }
+
     [HttpGet("rarity/{rarity}")]
     public async Task<ActionResult<IEnumerable<OperatorDto>>> GetOperatorsByRarity(int rarity)
     {
@@ -81,7 +88,7 @@ public class OperatorsController : ControllerBase
             return NotFound(new { Error = ex.Message });
         }
     }
-    
+
     [HttpPut("{id}")]
     [RequiredRole(UserRole.Admin)]
     public async Task<ActionResult<OperatorDto>> UpdateOperator(int id, OperatorCreateDto operatorDto)
@@ -116,10 +123,10 @@ public class OperatorsController : ControllerBase
         var operators = await _operatorService.SearchOperatorsByNameAsync(name);
         return Ok(operators);
     }
-    
+
     [HttpGet("paged")]
     public async Task<ActionResult<PagedResult<OperatorDto>>> GetOperatorsPaged(
-        [FromQuery] int page     = 1, 
+        [FromQuery] int page     = 1,
         [FromQuery] int pageSize = 10)
     {
         if (page < 1) page                           = 1;
@@ -128,14 +135,14 @@ public class OperatorsController : ControllerBase
         var result = await _operatorService.GetOperatorsPagedAsync(page, pageSize);
         return Ok(result);
     }
-    
+
     [HttpPost("search/advanced")]
     public async Task<ActionResult<PagedResult<OperatorDto>>> SearchOperatorsAdvanced(SearchRequest request)
     {
         var result = await _operatorService.SearchOperatorsAsync(request);
         return Ok(result);
     }
-    
+
     [HttpGet("search/advanced")]
     public async Task<ActionResult<PagedResult<OperatorDto>>> SearchOperatorsAdvancedGet(
         [FromQuery] string? name           = null,

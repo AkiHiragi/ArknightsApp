@@ -81,6 +81,27 @@ public class OperatorService : IOperatorService
         return updatedOperator != null ? _mapper.Map<OperatorDto>(updatedOperator) : null;
     }
 
+    public async Task<OperatorEditDto?> GetOperatorForEditAsync(int id)
+    {
+        var op = await _repository.GetByIdAsync(id);
+        if (op == null) return null;
+
+        return new OperatorEditDto
+        {
+            Id                = op.Id,
+            Name              = op.Name,
+            Rarity            = op.Rarity,
+            OperatorClassId   = op.OperatorClassId,
+            SubClassId        = op.SubClassId,
+            FactionId         = op.FactionId,
+            ImageUrl          = op.ImageUrl,
+            Description       = op.Description,
+            Position          = op.Position,
+            CnReleaseDate     = op.CnReleaseDate,
+            GlobalReleaseDate = op.GlobalReleaseDate
+        };
+    }
+
     public async Task<bool> DeleteOperatorAsync(int id)
     {
         _logger.LogInformation("Удаление оператора с ID: {OperatorId}", id);

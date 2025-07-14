@@ -6,8 +6,10 @@ import {
     OperatorClassDto,
     OperatorDetailsDto,
     OperatorDto,
-    PagedResult, RegisterRequest,
-    SearchRequest, SubClassDto
+    PagedResult,
+    RegisterRequest,
+    SearchRequest,
+    SubClassDto
 } from "../types";
 
 const API_BASE_URL = 'http://localhost:5000/api';
@@ -49,6 +51,10 @@ export const operatorApi = {
             ...response,
             data: processOperatorData(response.data)
         };
+    },
+    
+    getForEdit: async (id: number) => {
+        return await api.get(`/operators/${id}/edit`);
     },
 
     search: async (name: string) => {
@@ -144,7 +150,7 @@ export const adminReferenceApi = {
 export const fileUploadApi = {
     uploadOperatorImage:(file:File,operatorName:string)=>{
         const formData = new FormData();
-        formData.append('image', file);
+        formData.append('file', file);
         formData.append('operatorName', operatorName);
         
         return api.post('/fileupload/operator-image', formData, {

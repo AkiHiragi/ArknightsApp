@@ -46,7 +46,7 @@ public class FileUploadController : ControllerBase
             await using var stream = new FileStream(filePath, FileMode.Create);
             await file.CopyToAsync(stream);
 
-            var imageUrl = $"images/operators/{fileName}";
+            var imageUrl = $"/images/operators/{fileName}";
             
             _logger.LogInformation("Загружено изображение оператора: {FileName}", fileName);
 

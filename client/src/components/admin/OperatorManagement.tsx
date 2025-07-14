@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Routes, Route, useNavigate, Link} from 'react-router-dom';
+import {Routes, Route, useNavigate, Link, useParams} from 'react-router-dom';
 import {Table, Button, Alert, Spinner, Badge, Modal} from 'react-bootstrap';
 import {operatorApi, adminOperatorApi} from '../../services/api';
 import {OperatorDto} from '../../types';
@@ -176,14 +176,66 @@ const CreateOperator: React.FC = () => {
 };
 
 const EditOperator: React.FC = () => {
+    const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    // TODO: Загрузка данных оператора по ID и передача в форму
+    const [operator, setOperator] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchOperator = async () => {
+            if (!id) return;
+
+            try {
+                const response = await operatorApi.getForEdit(Number(id)); // Изменили на getForEdit
+
+                // Преобразуем даты в формат для input[type="date"]
+                const formattedData = {
+                    ...response.data,
+                    cnReleaseDate: new Date(response.data.cnReleaseDate).toISOString().split('T')[0],
+                    globalReleaseDate: response.data.globalReleaseDate
+                        ? new Date(response.data.globalReleaseDate).toISOString().split('T')[0]
+                        : ''
+                };
+
+                setOperator(formattedData); // Данные уже в правильном формате!
+            } catch (err) {
+                setError('Ошибка загрузки данных оператора');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchOperator();
+    }, [id]);
+
+    const handleSubmit = async (data: any) => {
+        await adminOperatorApi.update(Number(id!), data);
+        navigate('/admin/operators');
+    };
+
+    if (loading) {
+        return (
+            <div className="text-center">
+                <Spinner animation="border" />
+                <p>Загрузка данных оператора...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return <Alert variant="danger">{error}</Alert>;
+    }
 
     return (
         <div>
-            <h2 className="mb-4">Редактирование оператора</h2>
-            <Alert variant="info">Функция редактирования в разработке</Alert>
-            <Button onClick={() => navigate('/admin/operators')}>Назад к списку</Button>
+            <h2 className="mb-4">Редактирование оператора: {operator?.name}</h2>
+            <OperatorForm
+                initialData={operator}
+                onSubmit={handleSubmit}
+                onCancel={() => navigate('/admin/operators')}
+                isEditing={true}
+            />
         </div>
     );
 };

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Button, Row, Col, Alert, Spinner, Card, Image } from 'react-bootstrap';
-import { referenceApi, fileUploadApi } from '../../services/api';
-import { OperatorClassDto, FactionDto, SubClassDto } from '../../types';
+import React, {useState, useEffect} from 'react';
+import {Form, Button, Row, Col, Alert, Spinner, Card, Image} from 'react-bootstrap';
+import {referenceApi, fileUploadApi} from '../../services/api';
+import {OperatorClassDto, FactionDto, SubClassDto} from '../../types';
 
 interface OperatorFormData {
     name: string;
@@ -13,7 +13,7 @@ interface OperatorFormData {
     description: string;
     position: string;
     cnReleaseDate: string;
-    globalReleaseDate: string;
+    globalReleaseDate: string | null;
 }
 
 interface OperatorFormProps {
@@ -81,7 +81,7 @@ const OperatorForm: React.FC<OperatorFormProps> = ({
                     // Если текущий субкласс не подходит к новому классу, сбрасываем
                     const validSubClass = response.data.find(sc => sc.id === formData.subClassId);
                     if (!validSubClass && response.data.length > 0) {
-                        setFormData(prev => ({ ...prev, subClassId: response.data[0].id }));
+                        setFormData(prev => ({...prev, subClassId: response.data[0].id}));
                     }
                 } catch (err) {
                     console.error('Error fetching subclasses:', err);
@@ -118,7 +118,7 @@ const OperatorForm: React.FC<OperatorFormProps> = ({
         setUploadingImage(true);
         try {
             const response = await fileUploadApi.uploadOperatorImage(imageFile, formData.name);
-            setFormData(prev => ({ ...prev, imageUrl: response.data.imageUrl }));
+            setFormData(prev => ({...prev, imageUrl: response.data.imageUrl}));
             setError(null);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Ошибка загрузки изображения');
@@ -133,7 +133,28 @@ const OperatorForm: React.FC<OperatorFormProps> = ({
         setError(null);
 
         try {
-            await onSubmit(formData);
+            if (imageFile && !formData.imageUrl) {
+                setError('Сначала загрузите изображение, нажав кнопку "Загрузить изображение"');
+                setLoading(false);
+                return;
+            }
+
+            if (!formData.imageUrl) {
+                setError('Изображение оператора обязательно');
+                setLoading(false);
+                return;
+            }
+
+            const dataToSend = {
+                ...formData,
+                factionId: formData.factionId || null,
+                cnReleaseDate: new Date(formData.cnReleaseDate).toISOString(),
+                globalReleaseDate: formData.globalReleaseDate
+                    ? new Date(formData.globalReleaseDate).toISOString()
+                    : null
+            };
+
+            await onSubmit(dataToSend);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Ошибка сохранения');
         } finally {
@@ -142,7 +163,10 @@ const OperatorForm: React.FC<OperatorFormProps> = ({
     };
 
     const handleChange = (field: keyof OperatorFormData, value: any) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
+        if (field === 'globalReleaseDate' && value === '') {
+            value = null;
+        }
+        setFormData(prev => ({...prev, [field]: value}));
     };
 
     return (
@@ -290,7 +314,7 @@ const OperatorForm: React.FC<OperatorFormProps> = ({
                                 >
                                     {uploadingImage ? (
                                         <>
-                                            <Spinner size="sm" className="me-2" />
+                                            <Spinner size="sm" className="me-2"/>
                                             Загрузка...
                                         </>
                                     ) : (
@@ -303,24 +327,24 @@ const OperatorForm: React.FC<OperatorFormProps> = ({
                 </Col>
                 <Col md={4}>
                     <Form.Label>Превью</Form.Label>
-                    <Card style={{ height: '200px' }}>
+                    <Card style={{height: '200px'}}>
                         <Card.Body className="d-flex align-items-center justify-content-center p-2">
                             {imagePreview ? (
                                 <Image
                                     src={imagePreview}
                                     alt="Превью"
-                                    style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                                    style={{maxWidth: '100%', maxHeight: '100%', objectFit: 'contain'}}
                                 />
                             ) : formData.imageUrl ? (
                                 <Image
                                     src={`http://localhost:5000${formData.imageUrl}`}
                                     alt="Текущее изображение"
-                                    style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                                    style={{maxWidth: '100%', maxHeight: '100%', objectFit: 'contain'}}
                                 />
                             ) : (
                                 <div className="text-muted text-center">
-                                    <i className="bi bi-image" style={{ fontSize: '2rem' }}></i>
-                                    <br />
+                                    <i className="bi bi-image" style={{fontSize: '2rem'}}></i>
+                                    <br/>
                                     Нет изображения
                                 </div>
                             )}
@@ -365,7 +389,7 @@ const OperatorForm: React.FC<OperatorFormProps> = ({
                         <Form.Label>Дата релиза Global</Form.Label>
                         <Form.Control
                             type="date"
-                            value={formData.globalReleaseDate}
+                            value={formData.globalReleaseDate || ''}
                             onChange={(e) => handleChange('globalReleaseDate', e.target.value)}
                             disabled={loading}
                         />
@@ -378,7 +402,7 @@ const OperatorForm: React.FC<OperatorFormProps> = ({
                 <Button type="submit" variant="primary" disabled={loading}>
                     {loading ? (
                         <>
-                            <Spinner size="sm" className="me-2" />
+                            <Spinner size="sm" className="me-2"/>
                             {isEditing ? 'Сохранение...' : 'Создание...'}
                         </>
                     ) : (
