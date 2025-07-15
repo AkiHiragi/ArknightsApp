@@ -62,7 +62,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOperatorRepository, OperatorRepository>();
 
         // AutoMapper
-        services.AddAutoMapper(typeof(OperatorProfile), typeof(UserProfile));
+        services.AddAutoMapper(typeof(OperatorProfile), typeof(UserProfile), typeof(SkillProfile));
 
         // Validators
         services.AddScoped<IValidator<OperatorCreateDto>, OperatorCreateValidator>();
@@ -75,6 +75,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITalentService, TalentService>();
         services.AddScoped<IReferenceService, ReferenceService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ISkillTemplateService, SkillTemplateService>();
 
         // JWT Authentication
         services.AddJwtAuthentication(configuration);
