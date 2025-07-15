@@ -71,6 +71,8 @@ public static class ServiceCollectionExtensions
 
         // Services
         services.AddScoped<IOperatorService, OperatorService>();
+        services.AddScoped<ISkillService, SkillService>();
+        services.AddScoped<ITalentService, TalentService>();
         services.AddScoped<IReferenceService, ReferenceService>();
         services.AddScoped<IAuthService, AuthService>();
 

@@ -136,7 +136,7 @@ export const adminOperatorApi = {
         api.put(`/operators/${id}`, operatorData),
 
     delete: (id: number) =>
-        api.delete(`operators/${id}`)
+        api.delete(`/operators/${id}`)
 };
 
 export const adminReferenceApi = {
