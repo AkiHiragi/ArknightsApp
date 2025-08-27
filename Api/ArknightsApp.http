@@ -1,0 +1,6 @@
+@ArknightsApp_HostAddress = http://localhost:5037
+
+GET {{ArknightsApp_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
