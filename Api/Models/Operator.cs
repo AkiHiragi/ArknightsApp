@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ArknightsApp.Models;
@@ -18,4 +19,13 @@ public class Operator
     [MaxLength(500)] public string Description { get; set; } = string.Empty;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    // Изображения
+    public string? AvatarUrl { get; set; }
+    public string? PreviewUrl { get; set; }
+    public string? E0ArtUrl { get; set; }
+    public string? E2ArtUrl { get; set; }
+
+    // Скины
+    public ICollection<Skin> Skins { get; set; } = new List<Skin>();
 }

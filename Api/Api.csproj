@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6"/>
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.6"/>
@@ -22,7 +23,11 @@
 
     <ItemGroup>
         <Folder Include="Controllers\"/>
-        <Folder Include="Models\"/>
+        <Folder Include="wwwroot\images\operators\avatar\" />
+        <Folder Include="wwwroot\images\operators\e0\" />
+        <Folder Include="wwwroot\images\operators\e2\" />
+        <Folder Include="wwwroot\images\operators\preview\" />
+        <Folder Include="wwwroot\images\operators\skin\" />
     </ItemGroup>
 
 </Project>

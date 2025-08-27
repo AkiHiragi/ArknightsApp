@@ -33,6 +33,8 @@ builder.Services.AddScoped<IOperatorService, OperatorService>();
 
 var app = builder.Build();
 
+app.UseStaticFiles();
+
 using var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 await SeedData.SeedAsync(context);
