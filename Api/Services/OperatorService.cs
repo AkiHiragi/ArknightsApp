@@ -3,11 +3,12 @@ using System.Threading.Tasks;
 using ArknightsApp.Data;
 using ArknightsApp.ModelDto;
 using ArknightsApp.Models;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace ArknightsApp.Services;
 
-public class OperatorService(ApplicationDbContext context) : IOperatorService
+public class OperatorService(ApplicationDbContext context, IMapper mapper) : IOperatorService
 {
     public async Task<IEnumerable<Operator>> GetAllAsync()
         => await context.Operators.AsNoTracking().ToListAsync();
@@ -17,14 +18,7 @@ public class OperatorService(ApplicationDbContext context) : IOperatorService
 
     public async Task<Operator> CreateAsync(OperatorDto dto)
     {
-        var op = new Operator
-        {
-            Name = dto.Name,
-            Rarity = dto.Rarity,
-            Class = dto.Class,
-            Subclass = dto.Subclass,
-            Description = dto.Description
-        };
+        var op = mapper.Map<Operator>(dto);
 
         context.Operators.Add(op);
         await context.SaveChangesAsync();
@@ -37,13 +31,8 @@ public class OperatorService(ApplicationDbContext context) : IOperatorService
         var op = await GetByIdAsync(id);
         if (op == null) return null;
 
-        op.Name = dto.Name;
-        op.Rarity = dto.Rarity;
-        op.Class = dto.Class;
-        op.Subclass = dto.Subclass;
-        op.Description = dto.Description;
-
-        context.Update(op);
+        mapper.Map(dto, op);
+        
         await context.SaveChangesAsync();
         return op;
     }
