@@ -17,8 +17,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+       .AddEntityFrameworkStores<ApplicationDbContext>()
+       .AddDefaultTokenProviders();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -30,6 +30,7 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<OperatorDtoValidator>();
 
 builder.Services.AddScoped<IOperatorService, OperatorService>();
+builder.Services.AddScoped<IImageProcessingService, ImageProcessingService>();
 
 var app = builder.Build();
 

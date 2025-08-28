@@ -9,7 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6"/>
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.6"/>
@@ -19,15 +19,16 @@
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1"/>
         <PackageReference Include="FluentValidation" Version="12.0.0"/>
         <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1"/>
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11"/>
     </ItemGroup>
 
     <ItemGroup>
         <Folder Include="Controllers\"/>
-        <Folder Include="wwwroot\images\operators\avatar\" />
-        <Folder Include="wwwroot\images\operators\e0\" />
-        <Folder Include="wwwroot\images\operators\e2\" />
-        <Folder Include="wwwroot\images\operators\preview\" />
-        <Folder Include="wwwroot\images\operators\skin\" />
+        <Folder Include="wwwroot\images\operators\avatar\"/>
+        <Folder Include="wwwroot\images\operators\e0\"/>
+        <Folder Include="wwwroot\images\operators\e2\"/>
+        <Folder Include="wwwroot\images\operators\preview\"/>
+        <Folder Include="wwwroot\images\operators\skin\"/>
     </ItemGroup>
 
 </Project>
