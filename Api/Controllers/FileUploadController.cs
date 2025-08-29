@@ -73,8 +73,17 @@ namespace ArknightsApp.Controllers
             int avatarX, int avatarY, int avatarSize,
             int previewX, int previewY, int previewWidth, int previewHeight)
         {
+            Console.WriteLine($"Received parameters:");
+            Console.WriteLine($"avatarX: {avatarX}, avatarY: {avatarY}, avatarSize: {avatarSize}");
+            Console.WriteLine($"previewX: {previewX}, previewY: {previewY}, previewWidth: {previewWidth}, previewHeight: {previewHeight}");
+            
             if (file == null || file.Length == 0)
                 return BadRequest("Файл не выбран");
+            
+            if (avatarSize <= 0 || previewWidth <= 0 || previewHeight <= 0)
+            {
+                return BadRequest($"Invalid crop parameters: avatarSize={avatarSize}, previewWidth={previewWidth}, previewHeight={previewHeight}");
+            }
 
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
             var extension = Path.GetExtension(file.FileName).ToLower();

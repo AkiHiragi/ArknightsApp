@@ -30,7 +30,7 @@ public class ImageProcessingService(IWebHostEnvironment environment) : IImagePro
         await avatar.SaveAsPngAsync(Path.Combine(avatarPath, avatarFileName));
 
         var preview = image.Clone(x => x.Crop(new Rectangle(previewX, previewY, previewWidth, previewHeight)));
-        preview.Mutate(x => x.Resize(150, 300));
+        preview.Mutate(x => x.Resize(200, 300));
         var previewFileName = $"{operatorId}_preview.png";
         var previewPath = Path.Combine(environment.WebRootPath, "images", "operators", "preview");
         Directory.CreateDirectory(previewPath);

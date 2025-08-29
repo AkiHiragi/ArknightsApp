@@ -3,7 +3,11 @@ import type {Operator} from "../types/operator.ts";
 import {operatorService} from "../services/OperatorService.ts";
 import {OperatorCard} from "./OperatorCard.tsx";
 
-export function OperatorList() {
+interface Props {
+    onOperatorsLoaded?: (operators: Operator[]) => void;
+}
+
+export function OperatorList({onOperatorsLoaded}: Props) {
     const [operators, setOperators] = useState<Operator[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -12,6 +16,7 @@ export function OperatorList() {
             try {
                 const data = await operatorService.getAll();
                 setOperators(data);
+                onOperatorsLoaded?.(data);
             } catch (error) {
                 console.error('Failed to fetch operators:', error);
             } finally {
@@ -20,14 +25,14 @@ export function OperatorList() {
         };
 
         void fetchOperators();
-    }, []);
+    }, [onOperatorsLoaded]);
 
     if (loading) return <p className="text-gray-600">Loading operators...</p>;
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-4 justify-items-center">
             {operators.map(operator => (
-                <OperatorCard key={operator.id} operator={operator}/>
+                <OperatorCard key={operator.id} operator={operator} />
             ))}
         </div>
     );
