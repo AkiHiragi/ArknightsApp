@@ -12,9 +12,12 @@ public class Operator
 
     [Range(1, 6)] public int Rarity { get; set; }
 
-    [MaxLength(50)] public string Class { get; set; } = string.Empty;
+    // Связи с классом и подклассом
+    public int ClassId { get; set; }
+    public Class Class { get; set; } = null!;
 
-    [MaxLength(50)] public string Subclass { get; set; } = string.Empty;
+    public int SubclassId { get; set; }
+    public Subclass Subclass { get; set; } = null!;
 
     [MaxLength(500)] public string Description { get; set; } = string.Empty;
 

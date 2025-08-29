@@ -10,36 +10,62 @@ namespace ArknightsApp.Services;
 
 public class OperatorService(ApplicationDbContext context, IMapper mapper) : IOperatorService
 {
-    public async Task<IEnumerable<Operator>> GetAllAsync()
-        => await context.Operators.AsNoTracking().ToListAsync();
+    public async Task<IEnumerable<OperatorDto>> GetAllAsync()
+    {
+        var operators = await context.Operators
+                                     .AsNoTracking()
+                                     .Include(o => o.Class)
+                                     .Include(o => o.Subclass)
+                                     .ToListAsync();
 
-    public async Task<Operator?> GetByIdAsync(int id)
-        => await context.Operators.FindAsync(id);
+        return mapper.Map<IEnumerable<OperatorDto>>(operators);
+    }
 
-    public async Task<Operator> CreateAsync(OperatorDto dto)
+    public async Task<OperatorDto?> GetByIdAsync(int id)
+    {
+        var op = await context.Operators
+                              .AsNoTracking()
+                              .Include(o => o.Class)
+                              .Include(o => o.Subclass)
+                              .FirstOrDefaultAsync(o => o.Id == id);
+
+        return mapper.Map<OperatorDto>(op);
+    }
+
+    public async Task<OperatorDto> CreateAsync(OperatorDto dto)
     {
         var op = mapper.Map<Operator>(dto);
 
         context.Operators.Add(op);
         await context.SaveChangesAsync();
 
-        return op;
+        var created = await context.Operators
+                                   .Include(o => o.Class)
+                                   .Include(o => o.Subclass)
+                                   .FirstAsync(o => o.Id == op.Id);
+
+        return mapper.Map<OperatorDto>(created);
     }
 
-    public async Task<Operator?> UpdateAsync(int id, OperatorDto dto)
+    public async Task<OperatorDto?> UpdateAsync(int id, OperatorDto dto)
     {
-        var op = await GetByIdAsync(id);
+        var op = await context.Operators.FindAsync(id);
         if (op == null) return null;
 
         mapper.Map(dto, op);
-        
         await context.SaveChangesAsync();
-        return op;
+
+        var updated = await context.Operators
+                                   .Include(o => o.Class)
+                                   .Include(o => o.Subclass)
+                                   .FirstAsync(o => o.Id == id);
+
+        return mapper.Map<OperatorDto>(updated);
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        var op = await GetByIdAsync(id);
+        var op = await context.Operators.FindAsync(id);
         if (op == null) return false;
         context.Operators.Remove(op);
         await context.SaveChangesAsync();

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using ArknightsApp.ModelDto;
 using ArknightsApp.Models;
 using ArknightsApp.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ArknightsApp.Controllers;
 
@@ -12,20 +12,20 @@ namespace ArknightsApp.Controllers;
 public class OperatorsController(IOperatorService service) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Operator>>> GetOperators()
+    public async Task<ActionResult<IEnumerable<OperatorDto>>> GetOperators()
     {
         return Ok(await service.GetAllAsync());
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Operator>> GetOperator(int id)
+    public async Task<ActionResult<OperatorDto>> GetOperator(int id)
     {
         var op = await service.GetByIdAsync(id);
         return op == null ? NotFound() : Ok(op);
     }
 
     [HttpPost]
-    public async Task<ActionResult<Operator>> PostOperator([FromBody] OperatorDto dto)
+    public async Task<ActionResult<OperatorDto>> PostOperator([FromBody] OperatorDto dto)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
