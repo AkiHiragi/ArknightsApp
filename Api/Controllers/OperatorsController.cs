@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ArknightsApp.ModelDto;
-using ArknightsApp.Models;
 using ArknightsApp.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,6 +38,8 @@ public class OperatorsController(IOperatorService service) : ControllerBase
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
+
+        dto.Id = id;
 
         var op = await service.UpdateAsync(id, dto);
         return op != null ? Ok(op) : NotFound();

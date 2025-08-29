@@ -35,8 +35,8 @@ export function OperatorCard({operator}: Props) {
                     </div>
 
                     <div className="text-xs opacity-90">
-                        <p className="truncate">{operator.class}</p>
-                        <p className="truncate text-gray-300">{operator.subclass}</p>
+                        <p className="truncate">{operator.className}</p>
+                        <p className="truncate text-gray-300">{operator.subclassName}</p>
                     </div>
                 </div>
             </div>
