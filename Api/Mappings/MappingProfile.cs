@@ -10,7 +10,13 @@ public class MappingProfile : Profile
     {
         CreateMap<OperatorDto, Operator>();
         CreateMap<Operator, OperatorDto>()
-           .ForMember(dest => dest.ClassName, opt => opt.MapFrom(src => src.Class.Name))
-           .ForMember(dest => dest.SubclassName, opt => opt.MapFrom(src => src.Subclass.Name));
+            .ForMember(dest => dest.ClassName, opt => opt.MapFrom(src => src.Class.Name))
+            .ForMember(dest => dest.SubclassName, opt => opt.MapFrom(src => src.Subclass.Name));
+
+        CreateMap<Class, ClassDto>();
+
+        CreateMap<Subclass, SubclassDto>()
+            .ForMember(dest => dest.ClassName, opt => opt.MapFrom(src => src.Class.Name));
+        CreateMap<CreateSubclassDto, Subclass>();
     }
 }
