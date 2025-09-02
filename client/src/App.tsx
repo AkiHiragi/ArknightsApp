@@ -2,9 +2,10 @@ import {OperatorList} from "./components/OperatorList.tsx";
 import {useState} from "react";
 import type {Operator} from "./types/operator.ts";
 import {OperatorManager} from "./components/OperatorManager.tsx";
+import {ClassList} from "./components/ClassList.tsx";
 
 function App() {
-    const [currentView, setCurrentView] = useState<'list' | 'manager'>('list');
+    const [currentView, setCurrentView] = useState<'list' | 'manager' | 'class'>('list');
     const [operators, setOperators] = useState<Operator[]>([]);
 
     const handleOperatorUpdate = (updateOperator: Operator) => {
@@ -35,6 +36,12 @@ function App() {
                         >
                             Manager
                         </button>
+                        <button
+                            onClick={() => setCurrentView('class')}
+                            className={`px-4 py-2 rounded ${currentView === 'class' ? 'bg-blue-800' : 'bg-blue-500 hover:bg-blue-700'}`}
+                        >
+                            Classes
+                        </button>
                     </nav>
                 </div>
             </header>
@@ -42,11 +49,13 @@ function App() {
             <main className="container mx-auto p-4">
                 {currentView === 'list' ? (
                     <OperatorList onOperatorsLoaded={handleOperatorsLoaded}/>
-                ) : (
-                    <OperatorManager 
-                        operators={operators} 
+                ) : currentView === 'manager' ? (
+                    <OperatorManager
+                        operators={operators}
                         onOperatorUpdate={handleOperatorUpdate}
                     />
+                ) : (
+                    <ClassList/>
                 )}
             </main>
         </div>

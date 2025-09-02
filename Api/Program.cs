@@ -1,38 +1,22 @@
 using ArknightsApp.Data;
-using ArknightsApp.Mappings;
-using ArknightsApp.Services;
-using ArknightsApp.Validators;
-using FluentValidation;
-using FluentValidation.AspNetCore;
+using ArknightsApp.Extensions;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddPostgreSqlConnection(builder.Configuration);
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+builder.Services.AddIdentityUsersAndRoles();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddMappingsAndValidation();
 
-builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<OperatorDtoValidator>();
-
-builder.Services.AddScoped<IOperatorService, OperatorService>();
-builder.Services.AddScoped<IClassService, ClassService>();
-builder.Services.AddScoped<ISubclassService, SubclassService>();
-builder.Services.AddScoped<IImageProcessingService, ImageProcessingService>();
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 
